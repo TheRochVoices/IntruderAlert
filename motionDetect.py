@@ -5,10 +5,11 @@ import time
 
 class MotionDetector():
 
-    def onChange(self, val): #callback when the user change the ceil
+    def onChange(self, val): #callback when the user change the ceill
         self.ceil = val
 
     def __init__(self,ceil=8, doRecord=True, showWindows=True):
+	self.img = 1
         self.writer = None
         self.font = None
         self.doRecord=doRecord #Either or not record the moving object
@@ -47,7 +48,8 @@ class MotionDetector():
         self.font = cv.InitFont(cv.CV_FONT_HERSHEY_SIMPLEX, 1, 1, 0, 2, 8) #Creates a font
 
     def run(self):
-        started = time.time()
+	time.sleep(5)
+	started=0
         while True:
 
             curframe = cv.QueryFrame(self.capture)
@@ -58,10 +60,11 @@ class MotionDetector():
             if not self.isRecording:
                 if self.somethingHasMoved():
                     self.trigger_time = instant #Update the trigger_time
-                    if instant > started +5:#Wait 5 second after the webcam start for luminosity adjusting etc..
+                    if time.time() > started + 10:
+			started = time.time()
                         print "Something is moving !"
-			########editteeedddd#################
-			cv.SaveImage('intruder.jpg', curframe)
+			cv.SaveImage('intruder'+str(self.img)+".jpg", curframe)
+			self.img=self.img+1
                         if self.doRecord: #set isRecording=True only if we record a video
                             self.isRecording = True
 
@@ -112,4 +115,3 @@ class MotionDetector():
 if __name__=="__main__":
     detect = MotionDetector(doRecord=False)
     detect.run()
-
