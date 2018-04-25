@@ -2,6 +2,7 @@ import cv2.cv as cv
 import cv2
 from datetime import datetime
 import time
+from mysocket import sendImage
 
 class MotionDetector():
 
@@ -64,6 +65,7 @@ class MotionDetector():
 			started = time.time()
                         print "Something is moving !"
 			cv.SaveImage('intruder'+str(self.img)+".jpg", curframe)
+			sendImage(self.img)
 			self.img=self.img+1
                         if self.doRecord: #set isRecording=True only if we record a video
                             self.isRecording = True
@@ -101,7 +103,7 @@ class MotionDetector():
     def somethingHasMoved(self):
         nb=0 #Will hold the number of black pixels
 
-        for y in range(self.height): #Iterate the hole image
+        for y in range(self.height): #Iterate the whole image
             for x in range(self.width):
                 if self.res[y,x] == 0.0: #If the pixel is black keep it
                     nb += 1
